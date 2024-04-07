@@ -14,8 +14,6 @@ cursor = connect.cursor()
 
 
 def add_data(name: str, surname: str, room_number: int, grade_number: int, extra_info: str, chat_id: int):
-    # gift_id_collect
-
     gift_id = 3
     cursor.execute(
         f"INSERT INTO Participants (name, surname, room_number, grade_number, extra_info, chat_id, gift_id) VALUES ('{name}', '{surname}', {room_number}, {grade_number}, '{extra_info}', {chat_id}, {gift_id}) ")
@@ -32,13 +30,15 @@ def read_data():
     return data.fetchall()
 
 
-add_data("anrey", "zhmickh", 228, 3, "love cockroaches", 12223)
-
-
 def update_data_base():
     driver.get("https://inloop.github.io/sqlite-viewer/")
     file_input = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
     file_input.send_keys(local_db_path)
+
+
+def get_user_by_chat_id(chat_id):
+    data = cursor.execute(f"SELECT * FROM Participants WHERE chat_id = {chat_id}")
+    return data.fetchall()
 
 
 while True:
