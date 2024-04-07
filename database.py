@@ -1,4 +1,12 @@
 import sqlite3
+import time
+
+from selenium import webdriver as wd
+from selenium.webdriver.common.by import By
+
+local_db_path = '/home/matvey/Super fun python :)/secret_santa/database.s3db'
+
+driver = wd.Chrome()
 
 connect = sqlite3.connect('database.s3db')
 
@@ -25,3 +33,15 @@ def read_data():
 
 
 add_data("anrey", "zhmickh", 228, 3, "love cockroaches", 12223)
+
+
+def update_data_base():
+    driver.get("https://inloop.github.io/sqlite-viewer/")
+    file_input = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
+    file_input.send_keys(local_db_path)
+
+
+while True:
+    update_data_base()
+    time.sleep(10)
+    pass
