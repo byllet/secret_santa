@@ -1,5 +1,5 @@
 import random
-import database
+from database.database import read_data, update_gifts
 
 class SecretSanta:
 
@@ -9,7 +9,7 @@ class SecretSanta:
         self.participants = 0
  
     def get_info(self):
-        data = database.read_data()
+        data = read_data()
         for elem in data:
             id = int(elem[0])
             name = elem[1] + ' ' + elem[2]
@@ -49,16 +49,11 @@ class SecretSanta:
             ind = choices.index(gift_receiver)
             choices.pop(ind)
         for person in self.info:
-            database.update_gifts(person, self.selection[person])
+            update_gifts(person, self.selection[person])
             
     def start(self):
         self.get_info()
         self.assign()
-
-
-if __name__ == '__main__':
-    secret_santa = SecretSanta()
-    secret_santa.start()
 
 
   

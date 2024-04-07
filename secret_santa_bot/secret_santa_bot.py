@@ -2,11 +2,10 @@ import telebot
 from __init__ import bot
 from form_handler import processFnameStep
 from User import sendInfo, User
-from database.database import get_user_by_chat_id
+from database.database import get_user_by_chat_id, pulling, get_users
+from algo import SecretSanta
 
 time = '01.02.4002'
-
-admins = [702426433]
 
 def get_from_DB(chat_id):
     raw_data = get_user_by_chat_id(chat_id)
@@ -69,8 +68,15 @@ def send_notifications(chat_ids, message):
 
 @bot.message_handler(commands=['send'])
 def send(message):
-    if (message.chat.id in admins):
-        send_notifications([841859120, 966484522], "вам осталось 5 дней до ... конца хахатона")
+    # if (message.chat.id in admins):
+    data = get_users()
+    send_notifications([i[0] for i in data], "вам осталось 5 дней до ... ")
+
+
+@bot.message_handler(commands=['sort'])
+def sort(message):
+    ss = SecretSanta()
+    ss.start()
 
 
 @bot.message_handler(content_types=["text"])
@@ -79,4 +85,6 @@ def unknown(message):
 
 
 if __name__ == "__main__":
-    bot.infinity_polling()
+    from threading import Thread
+    Thread(target=bot.infinity_polling).start()
+    Thread(target=pulling).start()
