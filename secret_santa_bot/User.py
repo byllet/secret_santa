@@ -1,5 +1,6 @@
 from __init__ import bot
 
+
 class User:
     def __init__(self, fname):
         self.fname = fname
@@ -22,5 +23,4 @@ class User:
         return f'{self.fname}'
 
 def sendInfo(chat_id, user):
-    bot.send_message(chat_id,
-                     f'Ваши данные:  {user.fname} {user.sname}\n Курс: {user.year}\n Комната: {user.room}\n Подарок: {user.present}')
+    bot.send_message(chat_id, f'Ваши данные:  {user.fname} {user.sname}\n Курс: {user.year}\n Комната: {user.room}\n Подарок: {user.present}')

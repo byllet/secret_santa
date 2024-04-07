@@ -3,9 +3,11 @@ from __init__ import bot
 from form_handler import processFnameStep
 from User import sendInfo, User
 from database.database import get_user_by_chat_id, pulling, get_users
-from algo import SecretSanta
+from secret_santa_bot.algo import SecretSanta
+
 
 time = '01.02.4002'
+
 
 def get_from_DB(chat_id):
     raw_data = get_user_by_chat_id(chat_id)
@@ -20,6 +22,7 @@ def get_from_DB(chat_id):
     user.setYear(raw_data[4])
     user.present = raw_data[5]
     return user
+
 
 @bot.message_handler(commands=['start'])
 def start_message(message):

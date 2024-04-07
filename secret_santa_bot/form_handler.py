@@ -14,6 +14,7 @@ def processFnameStep(message):
         print(e)
         bot.reply_to(message, 'something was wrong')
 
+
 def processSnameStep(message):
     try:
         user = users_map[message.chat.id]
@@ -25,6 +26,7 @@ def processSnameStep(message):
         print(e)
         bot.reply_to(message, 'something was wrong')
 
+
 def processYearStep(message):
     try:
         user = users_map[message.chat.id]
@@ -34,9 +36,10 @@ def processYearStep(message):
         bot.register_next_step_handler(message, processRoomStep)
     except Exception as e:
         print(e)
-        bot.reply_to(message, 'неверно указан курс')
+        bot.reply_to(message, 'Неверно указан курс')
         message = bot.reply_to(message, 'Укажите ваш курс')
         bot.register_next_step_handler(message, processYearStep)
+
 
 def processRoomStep(message):
     try:
@@ -48,6 +51,8 @@ def processRoomStep(message):
     except Exception as e:
         print(e)
         bot.reply_to(message, 'something was wrong')
+
+
 def processPresentStep(message):
     try:
         user = users_map[message.chat.id]

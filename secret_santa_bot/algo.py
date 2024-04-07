@@ -1,6 +1,7 @@
 import random
 from database.database import read_data, update_gifts
 
+
 class SecretSanta:
 
     def __init__(self):
