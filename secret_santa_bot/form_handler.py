@@ -1,5 +1,6 @@
 import telebot
-from __init__ import bot
+from __init__ import bot, users_map
+from database.database import add_data
 class User:
     def __init__(self, fname):
         self.fname = fname
@@ -8,54 +9,72 @@ class User:
         self.room = -1
         self.present = ''
 
-users_map = {}
+    def setYear(self, year):
+        if year < 0 or year > 6:
+            raise Exception('year is incorrect')
+        self.year = year
 
-def process_fname_step(message):
+    def setRoom(self, room):
+        if room <= 0:
+            raise Exception('room is incorrect')
+        self.room = room
+
+    def __str(self):
+        return f'{self.fname}'
+
+def sendInfo(message, user):
+    bot.send_message(message.chat.id,
+                     f'Ваши данные:  {user.fname} {user.sname}\n Курс: {user.year}\n Комната: {user.room}\n Подарок: {user.present}')
+
+def processFnameStep(message):
     try:
-        users_map[message.chat.id] = User(message.text)
+        user = User(message.text)
+        users_map[message.chat.id] = user
+        message = bot.reply_to(message, 'Введите вашу фамилию')
+        bot.register_next_step_handler(message, processSnameStep)
 
-        message = bot.reply_to(message, 'Укажите ваше имя')
-        bot.register_next_step_handler(message, process_sname_step)
     except Exception as e:
         bot.reply_to(message, 'something was wrong')
 
-def process_sname_step(message):
-    try:
-        users_map[message.chat.id].sname = message.text
-
-        message = bot.reply_to(message, 'Укажите ваш курс')
-        bot.register_next_step_handler(message, process_year_step)
-    except Exception as e:
-        bot.reply_to(message, 'something was wrong')
-
-def process_year_step(message):
+def processSnameStep(message):
     try:
         user = users_map[message.chat.id]
-        user.year = int(message.text)
+        user.sname = message.text
+        message = bot.reply_to(message, 'Укажите ваш курс')
+        bot.register_next_step_handler(message, processYearStep)
+
+    except Exception as e:
+        bot.reply_to(message, 'something was wrong')
+
+def processYearStep(message):
+    try:
+        user = users_map[message.chat.id]
+        user.setYear(int(message.text))
 
         message = bot.reply_to(message, 'Укажите вашу комнату')
-        bot.register_next_step_handler(message, process_room_step)
+        bot.register_next_step_handler(message, processRoomStep)
     except Exception as e:
-        bot.reply_to(message, 'something was wrong')
+        bot.reply_to(message, 'неверно указан курс')
+        message = bot.reply_to(message, 'Укажите ваш курс')
+        bot.register_next_step_handler(message, processYearStep)
 
-def process_room_step(message):
+def processRoomStep(message):
     try:
         user = users_map[message.chat.id]
-        user.room = int(message.text)
+        user.setRoom(int(message.text))
 
         message = bot.reply_to(message, 'Какой подарок вы хотите?')
-        bot.register_next_step_handler(message, process_present_step)
+        bot.register_next_step_handler(message, processPresentStep)
     except Exception as e:
         bot.reply_to(message, 'something was wrong')
-def process_present_step(message):
+def processPresentStep(message):
     try:
         user = users_map[message.chat.id]
         user.present = message.text
-        bot.send_message(message.chat.id,
-                         'Приятно познакомиться, \n' + user.fname + ' ' + user.sname +
-                         '\n Курс: ' + str(user.year) +
-                         '\n Комната: ' + str(user.room) +
-                         '\n Present: ' + user.present)
-        print(users_map)
+        sendInfo(message, user)
+
+        add_data(user.fname, user.sname, user.room, user.year, user.present, message.chat.id)
+
     except Exception as e:
+        print(e)
         bot.reply_to(message, 'something was wrong')

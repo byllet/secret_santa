@@ -1,6 +1,6 @@
-from __init__ import bot
+from __init__ import bot, users_map
 import telebot
-from form_handler import process_fname_step
+from form_handler import processFnameStep
 
 time = '01.02.4002'
 
@@ -11,22 +11,24 @@ def start_message(message):
     info_button = telebot.types.KeyboardButton('/info')
     markup.add(create)
     markup.add(info_button)
-    bot.send_message(message.chat.id, 'Это тайный санта\n'
-                                      f'Время события {time}\n' 
-                                      'Для просмотра информации напишите /info',
+    bot.send_message(message.chat.id, f'Это тайный санта\n \
+                                      Время события {time}\n \
+                                      Для просмотра информации напишите /info',
                                                                                 reply_markup=markup)
 
 @bot.message_handler(commands=['create'])
-def create_do(message):
-    message = bot.reply_to(message, 'Ваша фамилия')
-    bot.register_next_step_handler(message, process_fname_step)
+def create(message):
+    message = bot.reply_to(message, 'Введите ваше имя')
+    bot.register_next_step_handler(message, processFnameStep)
+
+
 
 @bot.message_handler(commands=['info'])
-def info_send(message):
+def info(message):
     bot.send_message(message.chat.id, 'ho-ho')
 
 @bot.message_handler(content_types=["text"])
-def variable_message(message):
+def unknown(message):
     bot.send_message(message.chat.id, "Введите /start для начала")
 
 if __name__ == "__main__":
